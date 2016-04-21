@@ -1,0 +1,12 @@
+<resources>
+	<string name="app_name">RxAndroid</string>
+	<string name="enter_something">Enter Something:</string>
+	<string name="clear">clear</string>
+	<string name="please_enter_user_id">Please enter a user ID (1-10)</string>
+	<string name="get_user">Get user</string>
+	<string name="name">Name:</string>
+	<string name="username">Username:</string>
+	<string name="phone">Phone:</string>
+	<string name="email">Email:</string>
+	<string name="password">Password:</string>
+</resources>

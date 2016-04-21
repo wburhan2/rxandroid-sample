@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:layout_margin="12dp">
+
+	<TextView
+		android:id="@+id/name"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		tools:text="name"/>
+
+	<TextView
+		android:id="@+id/email"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/name"
+		tools:text="email"/>
+
+	<TextView
+		android:id="@+id/phone"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/email"
+		tools:text="phone"/>
+
+	<View
+		android:id="@+id/divider"
+		android:layout_width="match_parent"
+		android:layout_height="1dp"
+		android:background="@android:color/black"
+		android:layout_below="@id/phone"
+		android:layout_marginTop="12dp"/>
+
+	<ListView
+		android:id="@+id/post_list"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_below="@id/divider"
+		android:layout_marginTop="12dp"/>
+
+</RelativeLayout>

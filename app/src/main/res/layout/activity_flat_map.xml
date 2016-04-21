@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<TextView
+		android:id="@+id/please_enter_id"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/please_enter_user_id"
+		android:layout_marginTop="40dp"
+		android:layout_marginLeft="12dp"/>
+
+	<EditText
+		android:id="@+id/user_id_edit_text"
+		android:layout_width="35dp"
+		android:layout_height="wrap_content"
+		android:singleLine="true"
+		android:maxLength="2"
+		android:layout_marginTop="25dp"
+		android:layout_marginLeft="5dp"
+		android:layout_toRightOf="@+id/please_enter_id"
+		android:inputType="number"/>
+
+	<TextView
+		android:id="@+id/name_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/name"
+		android:layout_below="@id/please_enter_id"
+		android:layout_marginLeft="12dp"
+		android:layout_marginTop="50dp"/>
+
+	<TextView
+		android:id="@+id/name_value"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		tools:text="Tester"
+		android:layout_below="@id/please_enter_id"
+		android:layout_toRightOf="@id/name_label"
+		android:layout_marginLeft="4dp"
+		android:layout_marginTop="50dp"/>
+
+	<TextView
+		android:id="@+id/username_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/username"
+		android:layout_below="@id/name_label"
+		android:layout_marginLeft="12dp"
+		android:layout_marginTop="4dp"/>
+
+	<TextView
+		android:id="@+id/username_value"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		tools:text="testing"
+		android:layout_toRightOf="@id/username_label"
+		android:layout_marginTop="4dp"
+		android:layout_marginLeft="4dp"
+		android:layout_below="@id/name_value" />
+
+	<TextView
+		android:id="@+id/phone_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/phone"
+		android:layout_below="@id/username_label"
+		android:layout_marginLeft="12dp"
+		android:layout_marginTop="4dp"/>
+
+	<TextView
+		android:id="@+id/phone_value"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		tools:text="(123)456-7890"
+		android:layout_toRightOf="@id/phone_label"
+		android:layout_marginTop="4dp"
+		android:layout_marginLeft="4dp"
+		android:layout_below="@id/username_value" />
+
+	<TextView
+		android:id="@+id/email_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/email"
+		android:layout_below="@id/phone_label"
+		android:layout_marginLeft="12dp"
+		android:layout_marginTop="4dp"/>
+
+	<TextView
+		android:id="@+id/email_value"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		tools:text="test@test.com"
+		android:layout_toRightOf="@id/email_label"
+		android:layout_marginTop="4dp"
+		android:layout_marginLeft="4dp"
+		android:layout_below="@id/phone_value" />
+
+	<Button
+		android:id="@+id/get_user_btn"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/get_user"
+		android:textAllCaps="false"
+		android:layout_alignTop="@+id/user_id_edit_text"
+		android:layout_toRightOf="@+id/user_id_edit_text"
+		android:layout_marginLeft="26dp" />
+
+</RelativeLayout>
