@@ -19,6 +19,7 @@ import java.util.*;
 import java.util.concurrent.*;
 
 import retrofit.*;
+import retrofit.client.*;
 import rx.*;
 import rx.android.schedulers.*;
 import rx.functions.*;
@@ -46,7 +47,7 @@ public class ZipActivity extends AppCompatActivity {
 		postingList.setAdapter(zipAdapter);
 
 		setupActionBar(getSupportActionBar());
-		retrieveUserDataAndPost();
+		retrieveUserDataAndPostWithRxJava();
 	}
 
 	protected void setupActionBar(ActionBar actionBar) {
@@ -66,13 +67,20 @@ public class ZipActivity extends AppCompatActivity {
 		}
 	}
 
-	private void retrieveUserDataAndPost() {
+	/**
+	 * 2 consecutive network calls with RxJava.
+	 * For simplicity sake, we are retrieving the user data with userId of '1'
+	 */
+	private void retrieveUserDataAndPostWithRxJava() {
 		progressDialog = ProgressDialog.show(this, "", "Loading...");
 		RestAdapter restAdapter = RetrofitFactory.getRestAdapter(Executors.newSingleThreadExecutor());
 		UserService userService = RetrofitFactory.getUserService(restAdapter);
+
 		// I combined both ItemsResponse and UserDetailResponse by using the zip operator into a new response called UserDetailResponse through the "call" callback.
 		// Then, I updated both header and user items in onNext.
 		rx.Observable
+				// To add a 3rd network call after a successful 2nd network call, all we have to do is add it into zip operator, update the Func2 to Func3 and update UserAndPostResponse to contain the 3rd response as well.
+				// The response that we get from the fake REST API is funky, thus I have to wrap the response in a List<> to handle it.
 				.zip(userService.getUser("1"), userService.getUserPost("1"), new Func2<List<UserResponse>, List<PostResponse>, UserAndPostResponse>() {
 					@Override
 					public UserAndPostResponse call(List<UserResponse> userResponse, List<PostResponse> postResponses) {
@@ -104,6 +112,52 @@ public class ZipActivity extends AppCompatActivity {
 
 				zipAdapter.addAll(postResponse);
 				zipAdapter.notifyDataSetChanged();
+			}
+		});
+	}
+
+	/**
+	 * 2 consecutive network calls with standard retrofit.
+	 * For simplicity sake, we are retrieving the user data with userId of '1'
+	 */
+	private void retrieveUserDataAndPostWithoutRxJava() {
+		progressDialog = ProgressDialog.show(this, "", "Loading...");
+		RestAdapter restAdapter = RetrofitFactory.getRestAdapter(Executors.newSingleThreadExecutor());
+		final UserService userService = RetrofitFactory.getUserService(restAdapter);
+
+		// Get the user data first, then the user's post data
+		userService.getUser("1", new Callback<List<UserResponse>>() {
+			@Override
+			public void success(final List<UserResponse> userResponses, Response response) {
+				userService.getUserPost("1", new Callback<List<PostResponse>>() {
+					@Override
+					public void success(List<PostResponse> postResponses, Response response) {
+						// To add a 3rd network call after a successful 2nd network call, add it here and you will notice on how bloated this method can be..
+
+						UserResponse userResponse = userResponses.get(0);
+
+						name.setText(String.format("Name: %s", userResponse.getName()));
+						email.setText(String.format("Email: %s", userResponse.getEmail()));
+						phone.setText(String.format("Phone: %s", userResponse.getPhone()));
+
+						zipAdapter.addAll(postResponses);
+						zipAdapter.notifyDataSetChanged();
+
+						dismissProgressBar();
+					}
+
+					@Override
+					public void failure(RetrofitError error) {
+						Log.e(getClass().getSimpleName(), error.getMessage());
+						dismissProgressBar();
+					}
+				});
+			}
+
+			@Override
+			public void failure(RetrofitError error) {
+				Log.e(getClass().getSimpleName(), error.getMessage());
+				dismissProgressBar();
 			}
 		});
 	}

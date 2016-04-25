@@ -40,9 +40,10 @@ public class CombineLatestActivity extends AppCompatActivity {
 		password = (EditText) findViewById(R.id.password_field);
 		signupBtn = (Button) findViewById(R.id.signup);
 
-		nameObservable = RxTextView.textChanges(name).skip(4);
-		emailObservable = RxTextView.textChanges(email).skip(4);
-		passwordObservable = RxTextView.textChanges(password).skip(4);
+		// Only emit the event after each of them emit at least 1 event
+		nameObservable = RxTextView.textChanges(name).skip(1);
+		emailObservable = RxTextView.textChanges(email).skip(1);
+		passwordObservable = RxTextView.textChanges(password).skip(1);
 
 		signupBtn.setOnClickListener(new OnClickListener() {
 			@Override

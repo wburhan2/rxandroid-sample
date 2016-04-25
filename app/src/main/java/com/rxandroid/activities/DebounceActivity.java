@@ -49,7 +49,8 @@ public class DebounceActivity extends AppCompatActivity {
 		logAdapter = new LogAdapter(this, new ArrayList<String>());
 		logListView.setAdapter(logAdapter);
 
-		RxTextView.textChangeEvents(inputText).debounce(400, TimeUnit.MILLISECONDS)
+		RxTextView.textChangeEvents(inputText)
+				.debounce(400, TimeUnit.MILLISECONDS) // default Scheduler is computation
 				.filter(new Func1<TextViewTextChangeEvent, Boolean>() {
 					@Override
 					public Boolean call(TextViewTextChangeEvent textViewTextChangeEvent) {
@@ -60,7 +61,6 @@ public class DebounceActivity extends AppCompatActivity {
 				.subscribe(new Observer<TextViewTextChangeEvent>() {
 					@Override
 					public void onCompleted() {
-
 					}
 
 					@Override

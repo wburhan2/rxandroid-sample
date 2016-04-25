@@ -21,6 +21,7 @@ import java.util.*;
 import java.util.concurrent.*;
 
 import retrofit.*;
+import retrofit.client.*;
 import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.*;
@@ -38,6 +39,7 @@ public class FlatMapActivity extends AppCompatActivity {
 	private TextView username;
 	private TextView phone;
 	private TextView email;
+	private ProgressDialog progressDialog;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,7 +69,7 @@ public class FlatMapActivity extends AppCompatActivity {
 						userIdInput.setError("Please enter a number 1-10");
 					}
 					else {
-						getUserData();
+						getUserDataUsingRxJava();
 					}
 				}
 			}
@@ -91,8 +93,17 @@ public class FlatMapActivity extends AppCompatActivity {
 		}
 	}
 
-	private void getUserData() {
-		final ProgressDialog progressDialog = ProgressDialog.show(FlatMapActivity.this, "", "Getting user information..");
+	private void dismissProgressBar() {
+		if (progressDialog != null && progressDialog.isShowing()) {
+			progressDialog.dismiss();
+		}
+	}
+
+	/**
+	 * This network call utilize flat map operation to retrieve the user's data.
+	 */
+	private void getUserDataUsingRxJava() {
+		progressDialog = ProgressDialog.show(FlatMapActivity.this, "", "Getting user information..");
 		Observable.just(userIdInput.getText().toString())
 				.flatMap(new Func1<String, Observable<List<UserResponse>>>() {
 					@Override
@@ -103,19 +114,15 @@ public class FlatMapActivity extends AppCompatActivity {
 					}
 				}).subscribeOn(Schedulers.io())
 				  .observeOn(AndroidSchedulers.mainThread())
-				  .subscribe(new Observer<List<UserResponse>>() {
+				  .subscribe(new Observer<List<UserResponse>>() { // The response that we get from the fake REST API is funky, thus I have to wrap the response in a List<> to handle it.
 			@Override
 			public void onCompleted() {
-				if (progressDialog != null && progressDialog.isShowing()) {
-					progressDialog.dismiss();
-				}
+				dismissProgressBar();
 			}
 
 			@Override
 			public void onError(Throwable e) {
-				if (progressDialog != null && progressDialog.isShowing()) {
-					progressDialog.dismiss();
-				}
+				dismissProgressBar();
 
 				Log.e(getClass().getSimpleName(), e.getMessage());
 				new AlertDialog.Builder(FlatMapActivity.this).setTitle("Error").setMessage("Please enter a valid user ID").setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -133,6 +140,41 @@ public class FlatMapActivity extends AppCompatActivity {
 				username.setText(userResponse.getUsername());
 				phone.setText(userResponse.getPhone());
 				email.setText(userResponse.getEmail());
+			}
+		});
+	}
+
+	/**
+	 * This is the network call implementation with just using plain retrofit call.
+	 */
+	private void getUserDataWithoutRxJava() {
+		progressDialog = ProgressDialog.show(FlatMapActivity.this, "", "Getting user information..");
+
+		RestAdapter restAdapter = RetrofitFactory.getRestAdapter(Executors.newSingleThreadExecutor());
+		UserService userService = RetrofitFactory.getUserService(restAdapter);
+		userService.getUser(userIdInput.getText().toString(), new Callback<List<UserResponse>>() {
+			@Override
+			public void success(List<UserResponse> userResponseList, Response response) {
+				dismissProgressBar();
+
+				UserResponse userResponse = userResponseList.get(0);
+				name.setText(userResponse.getName());
+				username.setText(userResponse.getUsername());
+				phone.setText(userResponse.getPhone());
+				email.setText(userResponse.getEmail());
+			}
+
+			@Override
+			public void failure(RetrofitError error) {
+				dismissProgressBar();
+
+				Log.e(getClass().getSimpleName(), error.getMessage());
+				new AlertDialog.Builder(FlatMapActivity.this).setTitle("Error").setMessage("Please enter a valid user ID").setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				}).show();
 			}
 		});
 	}
