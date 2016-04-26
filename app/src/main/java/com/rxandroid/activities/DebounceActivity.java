@@ -34,6 +34,8 @@ public class DebounceActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_debounce);
 
+		setupActionBar(getSupportActionBar());
+
 		inputText = (EditText) findViewById(R.id.input_text);
 		logListView = (ListView) findViewById(R.id.log_list_view);
 		clearLogButton = (Button) findViewById(R.id.clear_log_btn);
@@ -73,6 +75,12 @@ public class DebounceActivity extends AppCompatActivity {
 						log(String.format("Inputted text is: %s", textViewTextChangeEvent.text().toString()));
 					}
 				});
+	}
+
+	protected void setupActionBar(ActionBar actionBar) {
+		if (actionBar != null) {
+			actionBar.setDisplayHomeAsUpEnabled(true);
+		}
 	}
 
 	@Override
