@@ -1,6 +1,6 @@
 # RxAndroid Sample Code
 
-This is the sample code for the Eastside Android meetup
+This is the sample code for the Eastside Android meetup.
 Keep in mind that the JSON response from the network call is a little weird. Therefore, I have to wrap the response in a List.
 
 License
